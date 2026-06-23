@@ -31,8 +31,13 @@ def login():
 @main.route('/register', methods=["GET", "POST"])
 def register():  # put application's code here
     if request.method == "POST":
-        email = request.form["email"]
-        password = request.form["password"]
+        email = request.form.get("email")
+        password = request.form.get("password")
+        print(request.form.get("account_type"))
+        if request.form.get("account_type"):
+            admin = True
+        else:
+            admin = False
 
         from .models import User
         from app import db
@@ -48,7 +53,7 @@ def register():  # put application's code here
             flash("Password is not secure","warning")
             return render_template("register.html")
 
-        new_user = User(email=email)
+        new_user = User(email=email,admin=admin)
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
