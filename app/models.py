@@ -6,6 +6,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
+    admin = db.Column(db.Boolean, nullable=False, default=False)
 
     def __repr__(self):
         return f"<User {self.id}, Email={self.email}>"
@@ -18,12 +19,15 @@ class User(db.Model):
         from .utils.hashing import hash_password
         return self.password == hash_password(password)
 
+    def check_admin(self):
+        return self.admin
+
 class Product(db.Model):
     __tablename__ = "products"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.String(1000), nullable=False)
+    description = db.Column(db.String(1000), nullable=False, default="no description")
     price = db.Column(db.Numeric(10, 2), nullable=False, default=0.0)
 
     def __repr__(self):

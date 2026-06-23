@@ -15,6 +15,7 @@ def test_create_user(app):
 
         assert result is not None
         assert result.email == "alice"
+        assert not result.check_admin()
 
 def test_delete_user(app):
     assert True
@@ -45,20 +46,22 @@ def test_register(app):
     db.session.commit()
 
     result = User.query.filter_by(email="alice").first()
+    assert not result.check_admin()
     assert result.id == 1
 
-    user = User(email="bob")
+    user = User(email="bob", admin=True)
     user.set_password("test")
 
     db.session.add(user)
     db.session.commit()
 
     result = User.query.filter_by(email="bob").first()
+    assert result.check_admin()
     assert result.id == 2
 
 
 def test_create_product(app):
-    product = Product(name="test",price=2.5)
+    product = Product(name="test",price=2.5,description="a test product")
 
     db.session.add(product)
     db.session.commit()
@@ -78,5 +81,5 @@ def test_create_product_without_price(app):
     result = Product.query.filter_by(name="test").first()
 
     assert result is not None
-    assert result.name == "test"#
+    assert result.name == "test"
     assert result.price == 0.0

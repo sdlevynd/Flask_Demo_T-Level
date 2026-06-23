@@ -11,7 +11,7 @@ def test_password_hashing():
     assert not user.check_password("wrong")
 
 def test_new_product():
-    product = Product(name="test",price=2.5)
+    product = Product(name="test",price=2.5,description="a test product")
     assert product.name == "test"
     assert product.price == 2.5
 
